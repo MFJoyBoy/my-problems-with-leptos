@@ -3,6 +3,8 @@ use leptos::prelude::*;
 use leptos_meta::MetaTags;
 
 pub mod app;
+pub mod page_with_problem;
+pub mod problematic_router;
 
 #[cfg(feature = "hydrate")]
 #[wasm_bindgen::prelude::wasm_bindgen]
