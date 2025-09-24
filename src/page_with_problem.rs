@@ -9,12 +9,9 @@ use leptos::{
     reactive::signal::signal,
     server::Resource,
 };
-use leptos_meta::provide_meta_context;
 
 #[component]
 pub fn ProblematicPage() -> impl IntoView {
-    provide_meta_context();
-
     let (count, count_ser) = signal(0);
     let resource1 = Resource::new(move || count.get(), |input| async move { input * 2 });
     let resource2 = Resource::new_blocking(
