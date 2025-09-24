@@ -11,18 +11,25 @@ use leptos_router::{
     path,
 };
 
-use crate::page_with_problem::ProblematicPage;
+use crate::{page_with_another_problem::SecondProblem, page_with_problem::ProblematicPage};
 
 ///view component that render and handler routes, all routes of web application defined here
 #[component]
 pub fn RootsOfProblems() -> impl IntoView {
     let routes_property = RoutesProps::builder()
         .children(RouteChildren::to_children(|| {
-            (Route(RouteProps {
-                path: path!("/problem_one"),
-                view: ProblematicPage,
-                ssr: SsrMode::OutOfOrder,
-            }),)
+            (
+                Route(RouteProps {
+                    path: path!("/problem_one"),
+                    view: ProblematicPage,
+                    ssr: SsrMode::OutOfOrder,
+                }),
+                Route(RouteProps {
+                    path: path!("/problem_two"),
+                    view: SecondProblem,
+                    ssr: SsrMode::OutOfOrder,
+                }),
+            )
         }))
         .fallback(|| p().child("nothing here, look other places for problems"))
         .build();
@@ -34,10 +41,16 @@ pub fn RootsOfProblems() -> impl IntoView {
                     .child(
                         header()
                             .class("rounded-xl overflow-hidden min-w-fit")
-                            .child(A(AProps::builder()
-                                .href("problem_one")
-                                .children(ToChildren::to_children(|| p().child("problem one")))
-                                .build())),
+                            .child((
+                                A(AProps::builder()
+                                    .href("problem_one")
+                                    .children(ToChildren::to_children(|| p().child("problem one")))
+                                    .build()),
+                                A(AProps::builder()
+                                    .href("problem_two")
+                                    .children(ToChildren::to_children(|| p().child("problem two")))
+                                    .build()),
+                            )),
                     )
                     .child(hr())
                     .child(

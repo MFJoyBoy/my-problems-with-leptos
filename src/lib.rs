@@ -3,6 +3,7 @@ use leptos::prelude::*;
 use leptos_meta::MetaTags;
 
 pub mod app;
+pub mod page_with_another_problem;
 pub mod page_with_problem;
 pub mod problematic_router;
 
