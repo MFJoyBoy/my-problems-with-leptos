@@ -1,0 +1,7 @@
+run with command:
+    cargo leptos serve --split
+
+there is a file called:
+    __wasm_split.js
+
+that is not found

@@ -3,14 +3,14 @@ use leptos::prelude::*;
 use leptos_meta::MetaTags;
 
 pub mod app;
-pub mod page_with_problem;
+pub mod pages;
 pub mod problematic_router;
 
 #[cfg(feature = "hydrate")]
 #[wasm_bindgen::prelude::wasm_bindgen]
 pub fn hydrate() {
     console_error_panic_hook::set_once();
-    leptos::mount::hydrate_body(app::App);
+    leptos::mount::hydrate_lazy(app::App);
 }
 
 /// shell component used as initial html template, app component mount into body element here
