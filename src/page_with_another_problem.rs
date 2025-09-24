@@ -4,14 +4,14 @@ use leptos::{
     html::{ElementChild, button, div, p},
     prelude::{
         ClassAttribute, Get, OnAttribute, ServerFnError, Suspense, SuspenseProps, ToChildren,
-        Write, signal_local,
+        Write, signal,
     },
     server::{LocalResource, OnceResource},
 };
 
 #[component]
 pub fn SecondProblem() -> impl IntoView {
-    let (count, count_ser) = signal_local(1);
+    let (count, count_ser) = signal(1);
     let resource1 = OnceResource::new(async move {
         wait_on_server(2).await.unwrap();
         2

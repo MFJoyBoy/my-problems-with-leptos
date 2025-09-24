@@ -9,7 +9,7 @@ use crate::problematic_router::RootsOfProblems;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let current_user = RwSignal::new_local(CurrentUser { me: None });
+    let current_user = RwSignal::new(CurrentUser { me: None });
     provide_context(current_user);
     provide_meta_context();
     (p().child("app page"), RootsOfProblems())
