@@ -11,7 +11,7 @@ use leptos_router::{
     path,
 };
 
-use crate::page_with_problem::ProblematicPage;
+use crate::page_with_problem::PageOne;
 
 ///view component that render and handler routes, all routes of web application defined here
 #[component]
@@ -19,8 +19,8 @@ pub fn RootsOfProblems() -> impl IntoView {
     let routes_property = RoutesProps::builder()
         .children(RouteChildren::to_children(|| {
             (Route(RouteProps {
-                path: path!("/problem_one"),
-                view: ProblematicPage,
+                path: path!("/one"),
+                view: PageOne,
                 ssr: SsrMode::OutOfOrder,
             }),)
         }))
@@ -35,7 +35,7 @@ pub fn RootsOfProblems() -> impl IntoView {
                         header()
                             .class("rounded-xl overflow-hidden min-w-fit")
                             .child(A(AProps::builder()
-                                .href("problem_one")
+                                .href("one")
                                 .children(ToChildren::to_children(|| p().child("problem one")))
                                 .build())),
                     )
