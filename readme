@@ -1,0 +1,6 @@
+the context is provided in the root component
+in the child page, two component independently access the context
+component one is reading value from context
+component two is updating value of context
+changes made in component two will not be reflected in component one
+expected behavior: when the value of context change, the change should be reflected in all places that are reading context value
