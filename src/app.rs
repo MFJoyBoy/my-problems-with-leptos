@@ -1,3 +1,6 @@
+use crate::problematic_router::RootsOfProblems;
+use leptos::prelude::Effect;
+use leptos::reactive::spawn_local;
 use leptos::server;
 use leptos::{
     IntoView, component,
@@ -7,8 +10,6 @@ use leptos::{
     server::OnceResource,
 };
 use leptos_meta::provide_meta_context;
-
-use crate::problematic_router::RootsOfProblems;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -24,18 +25,24 @@ pub struct CurrentUser {
 
 fn provide_current_user_context() {
     let current_user = RwSignal::new(CurrentUser { me: None });
-    OnceResource::new_blocking(async move {
+    let resource_date = OnceResource::new_blocking(async move {
         let response = get_current_user_private_data().await;
-        match response {
-            Ok(value) => {
-                current_user.update(|input| {
-                    input.me = Some(value);
-                });
+        response
+    });
+    Effect::new(move || {
+        spawn_local(async move {
+            let response = resource_date.await;
+            match response {
+                Ok(value) => {
+                    current_user.update(|input| {
+                        input.me = Some(value);
+                    });
+                }
+                Err(error) => {
+                    log!("{error:?}");
+                }
             }
-            Err(error) => {
-                log!("{error:?}");
-            }
-        }
+        });
     });
     provide_context(current_user);
 }
