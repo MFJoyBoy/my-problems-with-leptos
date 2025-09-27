@@ -11,18 +11,21 @@ use leptos_router::{
     path,
 };
 
-use crate::page_with_problem::ProblematicPage;
+use crate::{page_with_problem::ProblematicPage, pages::routes_of_pages};
 
 ///view component that render and handler routes, all routes of web application defined here
 #[component]
 pub fn RootsOfProblems() -> impl IntoView {
     let routes_property = RoutesProps::builder()
         .children(RouteChildren::to_children(|| {
-            (Route(RouteProps {
-                path: path!("/problem_one"),
-                view: ProblematicPage,
-                ssr: SsrMode::OutOfOrder,
-            }),)
+            (
+                Route(RouteProps {
+                    path: path!("/problem_one"),
+                    view: ProblematicPage,
+                    ssr: SsrMode::OutOfOrder,
+                }),
+                routes_of_pages(),
+            )
         }))
         .fallback(|| p().child("nothing here, look other places for problems"))
         .build();

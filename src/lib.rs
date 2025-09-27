@@ -4,6 +4,7 @@ use leptos_meta::MetaTags;
 
 pub mod app;
 pub mod page_with_problem;
+pub mod pages;
 pub mod problematic_router;
 
 #[cfg(feature = "hydrate")]
