@@ -55,6 +55,14 @@ pub fn routes_of_pages() -> impl MatchNestedRoutes + Clone {
         children: RouteChildren::to_children(|| {
             (
                 ProtectedRoute(ProtectedRouteProps {
+                    path: path!("/"),
+                    condition: || Some(true),
+                    fallback: ViewFn::from(|| ()),
+                    ssr: SsrMode::OutOfOrder,
+                    redirect_path: || "one",
+                    view: page_with_problem::ProblematicPage,
+                }),
+                ProtectedRoute(ProtectedRouteProps {
                     path: path!("/one"),
                     condition: || Some(true),
                     fallback: ViewFn::from(|| ()),
