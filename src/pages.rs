@@ -12,8 +12,6 @@ use leptos_router::{
     path,
 };
 
-use crate::page_with_problem;
-
 #[component]
 pub fn ParentPage() -> impl IntoView {
     (p().child("parent page"), div().child(Outlet()))
@@ -55,20 +53,20 @@ pub fn routes_of_pages() -> impl MatchNestedRoutes + Clone {
         children: RouteChildren::to_children(|| {
             (
                 ProtectedRoute(ProtectedRouteProps {
-                    path: path!("/"),
-                    condition: || Some(true),
+                    path: path!(""),
+                    condition: || Some(false),
                     fallback: ViewFn::from(|| ()),
                     ssr: SsrMode::OutOfOrder,
                     redirect_path: || "one",
-                    view: page_with_problem::ProblematicPage,
+                    view: || (),
                 }),
                 ProtectedRoute(ProtectedRouteProps {
-                    path: path!("/one"),
-                    condition: || Some(true),
+                    path: path!("one"),
+                    condition: || Some(false),
                     fallback: ViewFn::from(|| ()),
                     ssr: SsrMode::OutOfOrder,
                     redirect_path: || "two",
-                    view: page_with_problem::ProblematicPage,
+                    view: PageOne,
                 }),
                 ProtectedRoute(ProtectedRouteProps {
                     path: path!("two"),
@@ -76,7 +74,7 @@ pub fn routes_of_pages() -> impl MatchNestedRoutes + Clone {
                     fallback: ViewFn::from(|| ()),
                     ssr: SsrMode::OutOfOrder,
                     redirect_path: || "three",
-                    view: page_with_problem::ProblematicPage,
+                    view: PageTwo,
                 }),
                 ProtectedRoute(ProtectedRouteProps {
                     path: path!("three"),
@@ -84,15 +82,15 @@ pub fn routes_of_pages() -> impl MatchNestedRoutes + Clone {
                     fallback: ViewFn::from(|| ()),
                     ssr: SsrMode::OutOfOrder,
                     redirect_path: || "four",
-                    view: page_with_problem::ProblematicPage,
+                    view: PageThree,
                 }),
                 ProtectedRoute(ProtectedRouteProps {
                     path: path!("four"),
                     condition: || Some(false),
                     fallback: ViewFn::from(|| ()),
                     ssr: SsrMode::OutOfOrder,
-                    redirect_path: || "fine",
-                    view: page_with_problem::ProblematicPage,
+                    redirect_path: || "five",
+                    view: PageFour,
                 }),
                 ProtectedRoute(ProtectedRouteProps {
                     path: path!("five"),
@@ -100,7 +98,7 @@ pub fn routes_of_pages() -> impl MatchNestedRoutes + Clone {
                     fallback: ViewFn::from(|| ()),
                     ssr: SsrMode::OutOfOrder,
                     redirect_path: || "",
-                    view: page_with_problem::ProblematicPage,
+                    view: PageFive,
                 }),
             )
         }),
