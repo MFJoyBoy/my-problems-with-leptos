@@ -1,0 +1,3 @@
+in the parent component i try to access the cookie, and then check if cookie is available
+if it is not set, the set the initial value, just after setting it check the signal 
+but it will not set it in browser cookies, and later in child components when i try to access the cookie i will get none
