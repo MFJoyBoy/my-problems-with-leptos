@@ -1,60 +1,59 @@
-use leptos::html::br;
-use leptos::server;
+use leptos::html::hr;
+use leptos::logging::log;
+use leptos::prelude::{GetUntracked, Set, Update};
+use leptos::server::codee::string::FromToStringCodec;
 use leptos::{
     IntoView, component, ev,
     html::{ElementChild, button, div, p},
-    prelude::{
-        ClassAttribute, Get, OnAttribute, ServerFnError, Suspense, SuspenseProps, ToChildren, Write,
-    },
-    reactive::signal::signal,
-    server::Resource,
+    prelude::{Get, OnAttribute},
 };
 use leptos_meta::provide_meta_context;
+use leptos_use::use_cookie;
 
 #[component]
 pub fn ProblematicPage() -> impl IntoView {
     provide_meta_context();
+    let (cookie, cookie_set) = use_cookie::<i32, FromToStringCodec>("number");
+    match cookie.get_untracked() {
+        Some(value) => {
+            log!("initial cookie value: {}", value);
+        }
+        None => {
+            log!("initial cookie value is none");
+            cookie_set.set(Some(0));
+            log!("initial cookie after set is: {:?}", cookie.get_untracked());
+        }
+    };
 
-    let (count, count_ser) = signal(0);
-    let resource1 = Resource::new(move || count.get(), |input| async move { input * 2 });
-    let resource2 = Resource::new_blocking(
-        move || count.get(),
-        |input| async move {
-            wait_on_server().await.unwrap();
-            input * 3
-        },
-    );
-    div().class("bg-white h-full p-5").child((
-        p().child("First one, Good luck"),
-        br(),
-        p().child(move || format!("count: {}", count.get())),
-        Suspense(
-            SuspenseProps::builder()
-                .fallback(|| p().child("loading suspense 1 ..."))
-                .children(ToChildren::to_children(move || {
-                    p().child(move || format!("suspense data 1: {:?}", resource1.get()))
-                }))
-                .build(),
-        ),
-        Suspense(
-            SuspenseProps::builder()
-                .fallback(|| p().child("loading suspense 2 ..."))
-                .children(ToChildren::to_children(move || {
-                    p().child(move || format!("suspense data 2: {:?}", resource2.get()))
-                }))
-                .build(),
-        ),
-        button().child("button").on(ev::click, move |_| {
-            *count_ser.write() += 1;
-        }),
-    ))
+    div().child((One(), hr(), Two()))
 }
 
-#[server]
-async fn wait_on_server() -> Result<(), ServerFnError> {
-    use std::time::Duration;
-    use tokio::time::sleep;
+#[component]
+fn One() -> impl IntoView {
+    let (cookie, cookie_set) = use_cookie::<i32, FromToStringCodec>("number");
+    (
+        p().child("component one"),
+        p().child(("the cookie value: ", move || cookie.get())),
+        button().child("button").on(ev::click, move |_| {
+            cookie_set.update(|value| {
+                let number = *value.as_ref().unwrap() + 1;
+                *value = Some(number);
+            });
+        }),
+    )
+}
 
-    sleep(Duration::from_secs(2)).await;
-    Ok(())
+#[component]
+fn Two() -> impl IntoView {
+    let (cookie, cookie_set) = use_cookie::<i32, FromToStringCodec>("number");
+    (
+        p().child("component two"),
+        p().child(("the cookie value: ", move || cookie.get())),
+        button().child("button").on(ev::click, move |_| {
+            cookie_set.update(|value| {
+                let number = *value.as_ref().unwrap() + 1;
+                *value = Some(number);
+            });
+        }),
+    )
 }

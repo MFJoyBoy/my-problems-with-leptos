@@ -17,6 +17,7 @@ leptos_router = { version = "0.8.7" }
 leptos_axum = { version = "0.8.6", optional = true }
 
 axum = { version = "0.8.4", optional = true }
+leptos-use = "0.16.2"
 
 [features]
 default = ["ssr"]
@@ -28,6 +29,8 @@ ssr = [
     "leptos/ssr",
     "leptos_meta/ssr",
     "leptos_router/ssr",
+    "leptos-use/ssr",
+    "leptos-use/axum",
 ]
 
 # Defines a size-optimized profile for the WASM bundle in release mode
