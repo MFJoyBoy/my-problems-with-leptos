@@ -1,0 +1,6 @@
+i have "/parent" route with five sub routes
+1: if i go to path "/parent" it redirect to path "/parent/two" and i see PageTwo view ✅
+2: if i go to path "/parent/two" it won't redirect and shows PageTwo view ✅
+3: if i go to path "/parent/three" it should redirect to path "/parent" then redirect to path "/parent/two" and at the end i see PageTwo view ❌
+
+note: case 3 works if i use absolute path as ' redirect_path: || "/parent" ' but won't work with relative path as ' redirect_path: || "" '
