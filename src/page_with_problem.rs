@@ -1,5 +1,5 @@
 use leptos::logging::log;
-use leptos::prelude::{Effect, RwSignal, Suspend, Update};
+use leptos::prelude::{Effect, RwSignal, Update};
 use leptos::server;
 use leptos::{
     IntoView, component, ev,
@@ -26,11 +26,9 @@ pub fn ProblematicPage() -> impl IntoView {
         Suspense(
             SuspenseProps::builder()
                 .children(ToChildren::to_children(move || {
-                    Suspend::new(async move {
-                        let number = number_resource.await;
-                        let text = format!("resource number: {}", number);
-                        p().child(text)
-                    })
+                    let number = number_resource.get();
+                    let text = format!("resource number: {:?}", number);
+                    p().child(text)
                 }))
                 .fallback(|| p().child("waiting ..."))
                 .build(),

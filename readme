@@ -1,8 +1,27 @@
 i have server function and take input, wait for a while and return something
 i have a resource that read signal in it's source and in it's fetcher it call the server function, wait for server function response and return something
 i have signal
-i have suspense component that have suspend component as it's child
-inside suspend component i await for resource value, and use this value for rendering view
 i have a button, when i click on button it update signal value
 when signal value change it trigger refetch on resource
-problem -> when resource value change the view inside suspend won't update
+problem -> when i remove suspend component and read resource value inside the resource component i get the two following errors:
+
+
+leptos_problems.js:1109 At src/page_with_problem.rs:29:50, you access a reactive_graph::computed::async_derived::async_derived::AsyncDerived<i32> (defined at src/page_with_problem.rs:14:27) outside a reactive tracking context. This might mean your app is not responding to changes in signal values in the way you expect.
+
+Here’s how to fix it:
+
+1. If this is inside a `view!` macro, make sure you are passing a function, not a value.
+  ❌ NO  <p>{x.get() * 2}</p>
+  ✅ YES <p>{move || x.get() * 2}</p>
+
+2. If it’s in the body of a component, try wrapping this access in a closure:
+  ❌ NO  let y = x.get() * 2
+  ✅ YES let y = move || x.get() * 2.
+
+3. If you’re *trying* to access the value without tracking, use `.get_untracked()` or `.with_untracked()` instead.
+
+
+
+leptos_problems.js:1109 At src/page_with_problem.rs:29:50, you are reading a resource in `hydrate` mode outside a <Suspense/> or <Transition/> or effect. This can cause hydration mismatch errors and loses out on a significant performance optimization. To fix this issue, you can either:
+1. Wrap the place where you read the resource in a <Suspense/> or <Transition/> component, or
+2. Switch to using LocalResource::new(), which will wait to load the resource until the app is hydrated on the client side. (This will have worse performance in most cases.)
