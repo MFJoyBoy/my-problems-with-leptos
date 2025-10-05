@@ -1,60 +1,51 @@
-use leptos::html::br;
+use leptos::logging::log;
+use leptos::prelude::{Effect, RwSignal, Suspend, Update};
 use leptos::server;
 use leptos::{
     IntoView, component, ev,
-    html::{ElementChild, button, div, p},
-    prelude::{
-        ClassAttribute, Get, OnAttribute, ServerFnError, Suspense, SuspenseProps, ToChildren, Write,
-    },
-    reactive::signal::signal,
+    html::{ElementChild, button, p},
+    prelude::{Get, OnAttribute, ServerFnError, Suspense, SuspenseProps, ToChildren},
     server::Resource,
 };
-use leptos_meta::provide_meta_context;
 
 #[component]
 pub fn ProblematicPage() -> impl IntoView {
-    provide_meta_context();
-
-    let (count, count_ser) = signal(0);
-    let resource1 = Resource::new(move || count.get(), |input| async move { input * 2 });
-    let resource2 = Resource::new_blocking(
-        move || count.get(),
-        |input| async move {
-            wait_on_server().await.unwrap();
-            input * 3
+    let number_signal = RwSignal::new(0);
+    let number_resource = Resource::new(
+        move || number_signal.get(),
+        move |input| async move {
+            let response = wait_on_server(input).await.unwrap();
+            response
         },
     );
-    div().class("bg-white h-full p-5").child((
-        p().child("First one, Good luck"),
-        br(),
-        p().child(move || format!("count: {}", count.get())),
+    Effect::new(move || {
+        log!("signal number -> {:?}", number_signal.get());
+        log!("resource number -> {:?}", number_resource.get());
+    });
+    (
         Suspense(
             SuspenseProps::builder()
-                .fallback(|| p().child("loading suspense 1 ..."))
                 .children(ToChildren::to_children(move || {
-                    p().child(move || format!("suspense data 1: {:?}", resource1.get()))
+                    Suspend::new(async move {
+                        let number = number_resource.await;
+                        let text = format!("resource number: {}", number);
+                        p().child(text)
+                    })
                 }))
-                .build(),
-        ),
-        Suspense(
-            SuspenseProps::builder()
-                .fallback(|| p().child("loading suspense 2 ..."))
-                .children(ToChildren::to_children(move || {
-                    p().child(move || format!("suspense data 2: {:?}", resource2.get()))
-                }))
+                .fallback(|| p().child("waiting ..."))
                 .build(),
         ),
         button().child("button").on(ev::click, move |_| {
-            *count_ser.write() += 1;
+            number_signal.update(|value| {
+                *value += 1;
+            });
         }),
-    ))
+    )
 }
 
 #[server]
-async fn wait_on_server() -> Result<(), ServerFnError> {
+async fn wait_on_server(number: i32) -> Result<i32, ServerFnError> {
     use std::time::Duration;
-    use tokio::time::sleep;
-
-    sleep(Duration::from_secs(2)).await;
-    Ok(())
+    tokio::time::sleep(Duration::from_secs(2)).await;
+    Ok(number * 2)
 }

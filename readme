@@ -1,0 +1,8 @@
+i have server function and take input, wait for a while and return something
+i have a resource that read signal in it's source and in it's fetcher it call the server function, wait for server function response and return something
+i have signal
+i have suspense component that have suspend component as it's child
+inside suspend component i await for resource value, and use this value for rendering view
+i have a button, when i click on button it update signal value
+when signal value change it trigger refetch on resource
+problem -> when resource value change the view inside suspend won't update
